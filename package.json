@@ -1,0 +1,27 @@
+{
+  "name": "webpackrc",
+  "version": "1.0.0",
+  "description": "on the fly webpack config generator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/insin/react-heatpack.git"
+  },
+  "bin": {
+    "webpackrc": "bin/webpackrc.js"
+  },
+  "scripts": {},
+  "dependencies": {
+    "debug": "^2.2.0",
+    "eventsource-polyfill": "^0.9.6",
+    "express": "^4.13.3",
+    "lodash.uniq": "^3.2.2",
+    "minimist": "^1.2.0",
+    "node-libs-browser": "^0.5.3",
+    "webpack": "^1.12.6",
+    "webpack-combine-loaders": "^1.0.0",
+    "webpack-dev-middleware": "^1.2.0",
+    "webpack-hot-middleware": "^2.5.0"
+  },
+  "devDependencies": {},
+  "license": "MIT"
+}
