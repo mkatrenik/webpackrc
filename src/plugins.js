@@ -101,7 +101,7 @@ module.exports = {
       }
     })
   },
-  imagesPng(config) {
+  imagesJpg(config) {
     config.module.loaders.push({
       test: /\.jpe?g$/,
       loader: 'file'

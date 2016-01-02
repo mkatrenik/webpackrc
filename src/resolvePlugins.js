@@ -13,7 +13,7 @@ const DEFAULT_PLUGINS = [
   'json',
   'css',
   'imagesGifPng',
-  'imagesPng',
+  'imagesJpg',
   'fonts',
   'svg'
 ]
