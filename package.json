@@ -4,7 +4,7 @@
   "description": "on the fly webpack config generator",
   "repository": {
     "type": "git",
-    "url": "https://github.com/insin/react-heatpack.git"
+    "url": "https://github.com/mkatrenik/webpackrc.git"
   },
   "bin": {
     "webpackrc": "bin/webpackrc.js"
