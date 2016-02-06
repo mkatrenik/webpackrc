@@ -1,5 +1,6 @@
 const path = require('path');
 const uniq = require('lodash.uniq');
+const debug = require('./utils').debug;
 
 // load default plugins
 // iterate over `plugins`:

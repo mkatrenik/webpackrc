@@ -5,55 +5,29 @@
 require('harmonize')();
 
 const path = require('path');
-const parseArgs = require('minimist');
-const debug = global.debug = require('debug')('webpackrc');
 
-const pkg = require('../package.json');
 const resolvePlugins = require('../src/resolvePlugins');
 const createWebpackConfig = require('../src/generateWebpackConfig');
 const server = require('../src/server');
 const loadConfig = require('../src/loadRcFile');
-const dump = require('./utils').dump;
+const utils = require('../src/utils');
+const parseArgs = require('../src/parseArgs');
 
-const ENV = process.env.NODE_ENV || 'development';
+const dump = utils.dump;
+const debug = utils.debug;
 
-const rc = loadConfig({env: ENV});
+const env = process.env.NODE_ENV || 'development';
 
-const args = parseArgs(process.argv.slice(2), {
-  alias: {
-    b: 'base',
-    h: 'help',
-    p: 'port',
-    v: 'version'
-  },
-  boolean: ['help', 'version'],
-  default: {
-    port: 3000,
-    base: process.cwd()
-  }
-});
-
-if (args.version) {
-  console.log(`v ${pkg.version}`);
-  process.exit(0);
-}
-if (args.help || args._.length === 0) {
-  console.log('Usage: webpackrc [options] script');
-  console.log('');
-  console.log('Options:');
-  console.log('  -b, --base    static file\'s base path');
-  console.log('  -p, --port    port to run the webpack dev server on [default: 3000]');
-  console.log('  -v, --version print heatpack\'s version');
-  process.exit(0);
-}
+const args = parseArgs();
+const rc = loadConfig({env});
 
 const options = Object.assign({
-  entry: path.resolve(args._[0]),
+  entry: path.resolve(args.entry),
   noInfo: !args.info,
   port: args.port,
   base: path.resolve(args.base),
-  ENV
-}, rc.env[ENV]);
+  env
+}, rc.env[env]);
 
 debug('initialized with options', dump(options));
 

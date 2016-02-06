@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const webpack = require('webpack');
+const debug = require('./utils').debug;
 
 module.exports = function server(webpackConfig, options) {
   const app = express();
