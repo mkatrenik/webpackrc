@@ -4,11 +4,12 @@ const assert = require('assert');
 const resolvePlugins = require('../src/resolvePlugins');
 const fs = require('fs');
 const sinon = require('sinon');
+const path = require('path');
 
 describe('resolvePlugins.js', () => {
   describe('default()', () => {
     before(() => {
-      sinon.stub(process, 'cwd', () => __dirname);
+      sinon.stub(process, 'cwd', () => path.join(__dirname, 'mocks'));
     });
 
     after(() => {
@@ -56,7 +57,7 @@ describe('resolvePlugins.js', () => {
 
   describe('getLocalPlugin()', () => {
     before(() => {
-      sinon.stub(process, 'cwd', () => __dirname);
+      sinon.stub(process, 'cwd', () => path.join(__dirname, 'mocks'));
     });
 
     after(() => {

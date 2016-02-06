@@ -6,42 +6,18 @@ require('harmonize')();
 
 const path = require('path');
 const parseArgs = require('minimist');
-const fs = require('fs');
 const debug = global.debug = require('debug')('webpackrc');
-const util = require('util');
-const assert = require('assert');
 
 const pkg = require('../package.json');
 const resolvePlugins = require('../src/resolvePlugins');
 const createWebpackConfig = require('../src/generateWebpackConfig');
 const server = require('../src/server');
+const loadConfig = require('../src/loadRcFile');
+const dump = require('./utils').dump;
 
 const ENV = process.env.NODE_ENV || 'development';
 
-function _dump(data) {
-  return util.inspect(data, {showHidden: false, depth: null, colors: true});
-}
-
-let rc = null;
-
-try {
-  const rcFile = fs.readFileSync(path.join(process.cwd(), '.webpackrc')).toString();
-  rc = JSON.parse(rcFile);
-  debug(`.webpackrc > `, _dump(rc));
-} catch (err) {
-  debug(`[WARN] .webpackrc doesn't exist or is not valid json, using default`, err);
-  rc = {
-    env: {
-      [ENV]: {
-        plugins: []
-      }
-    }
-  };
-} finally {
-  assert(rc.env);
-  assert(rc.env[ENV]);
-  assert(rc.env[ENV].plugins);
-}
+const rc = loadConfig({env: ENV});
 
 const args = parseArgs(process.argv.slice(2), {
   alias: {
@@ -79,7 +55,7 @@ const options = Object.assign({
   ENV
 }, rc.env[ENV]);
 
-debug('initialized with options', _dump(options));
+debug('initialized with options', dump(options));
 
 options.plugins = resolvePlugins(options);
 
