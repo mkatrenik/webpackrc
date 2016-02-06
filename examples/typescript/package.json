@@ -15,5 +15,9 @@
     "style-loader": "^0.13.0",
     "ts-loader": "^0.7.2",
     "typescript": "^1.7.5"
+  },
+  "dependencies": {
+    "eventsource-polyfill": "^0.9.6",
+    "webpack-hot-middleware": "^2.6.4"
   }
 }

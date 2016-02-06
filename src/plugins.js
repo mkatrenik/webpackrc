@@ -1,7 +1,37 @@
-var combineLoaders = require('webpack-combine-loaders')
+'use strict';
 
-module.exports = {
+const combineLoaders = require('webpack-combine-loaders');
+
+function pkg(props) {
+  if (!props.name) {
+    throw new Error('Missing dependency name');
+  }
+  let name = props.name;
+
+  if (props.version) {
+    name = `${name}@${props.version}`;
+  }
+
+  let save = '--save-dev';
+
+  if (props.saveProd) {
+    save = '--save';
+  }
+  name = `${name} ${save}`;
+  return name;
+}
+
+const configPlugins = {
   babel(config) {
+    config._pkgs.push(
+      pkg({name: 'babel-core', version: '1.2.3'}),
+      pkg({name: 'babel-preset-es2015', saveProd: true}),
+      pkg({name: 'babel-preset-react'}),
+      pkg({name: 'babel-preset-stage-0'}),
+      pkg({name: 'babel-plugin-transform-runtime'}),
+      pkg({name: 'babel-plugin-transform-react-display-name'}),
+      pkg({name: 'babel-plugin-react-transform'})
+    );
     config.module.loaders.push({
       test: /\.jsx?$/,
       loader: 'babel',
@@ -24,20 +54,23 @@ module.exports = {
           }]
         ]
       }
-    })
+    });
   },
   typescript(config) {
+    config._pkgs.push(
+      pkg({name: 'typescript'})
+    );
     config.module.loaders.push({
       test: /\.tsx?$/,
       loader: 'ts-loader',
       exclude: /node_modules/
-    })
+    });
   },
   json(config) {
     config.module.loaders.push({
       test: /\.json$/,
       loader: 'json'
-    })
+    });
   },
   css(config) {
     config.module.loaders.push({
@@ -57,13 +90,13 @@ module.exports = {
           }
         }
       ])
-    })
+    });
   },
   less(config) {
     config.module.loaders.push({
       test: /\.less$/,
-      loader: "style!css!less?strictMath&noIeCompat&sourceMap"
-    })
+      loader: 'style!css!less?strictMath&noIeCompat&sourceMap'
+    });
   },
   sass(config) {
     config.module.loaders.push({
@@ -90,7 +123,7 @@ module.exports = {
           }
         }
       ])
-    })
+    });
   },
   imagesGifPng(config) {
     config.module.loaders.push({
@@ -99,13 +132,13 @@ module.exports = {
       query: {
         limit: 10240
       }
-    })
+    });
   },
   imagesJpg(config) {
     config.module.loaders.push({
       test: /\.jpe?g$/,
       loader: 'file'
-    })
+    });
   },
   fonts(config) {
     config.module.loaders.push({
@@ -114,7 +147,7 @@ module.exports = {
       query: {
         limit: 10240
       }
-    })
+    });
   },
   svg(config) {
     config.module.loaders.push({
@@ -123,20 +156,25 @@ module.exports = {
       query: {
         limit: 10240
       }
-    })
+    });
   },
   eslint(config) {
     config.module.preloaders.push({
       test: /\.jsx?$/,
       exclude: /node_modules/,
       loader: 'eslint'
-    })
+    });
   },
   tslint(config) {
     config.module.preloaders.push({
       test: /\.tsx?$/,
       exclude: /node_modules/,
       loader: 'tslint'
-    })
+    });
   }
-}
+};
+
+module.exports = {
+  configPlugins,
+  pkg
+};

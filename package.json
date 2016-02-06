@@ -9,11 +9,16 @@
   "bin": {
     "webpackrc": "bin/webpackrc.js"
   },
-  "scripts": {},
+  "scripts": {
+    "test": "npm run lint && mocha tests",
+    "lint": "xo src/*.js bin/*.js"
+  },
   "dependencies": {
+    "cross-spawn": "^2.1.5",
     "debug": "^2.2.0",
     "eventsource-polyfill": "^0.9.6",
     "express": "^4.13.3",
+    "harmonize": "^1.4.4",
     "lodash.uniq": "^3.2.2",
     "minimist": "^1.2.0",
     "node-libs-browser": "^0.5.3",
@@ -22,6 +27,20 @@
     "webpack-dev-middleware": "^1.2.0",
     "webpack-hot-middleware": "^2.5.0"
   },
-  "devDependencies": {},
-  "license": "MIT"
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "npm-install-webpack-plugin": "^2.0.2",
+    "xo": "^0.12.1"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "license": "MIT",
+  "xo": {
+    "esnext": true,
+    "fix": true,
+    "space": 2,
+    "env": ["node", "mocha"],
+    "globals": ["debug"]
+  }
 }
