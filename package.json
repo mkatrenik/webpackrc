@@ -10,7 +10,7 @@
     "webpackrc": "bin/webpackrc.js"
   },
   "scripts": {
-    "test": "npm run lint && mocha tests",
+    "test": "npm run lint && mocha -r tests/common.js tests",
     "lint": "xo src/*.js bin/*.js"
   },
   "dependencies": {
@@ -30,6 +30,7 @@
   "devDependencies": {
     "mocha": "^2.4.5",
     "npm-install-webpack-plugin": "^2.0.2",
+    "sinon": "^1.17.3",
     "xo": "^0.12.1"
   },
   "engines": {
@@ -40,7 +41,12 @@
     "esnext": true,
     "fix": true,
     "space": 2,
-    "env": ["node", "mocha"],
-    "globals": ["debug"]
+    "env": [
+      "node",
+      "mocha"
+    ],
+    "globals": [
+      "debug"
+    ]
   }
 }

@@ -21,7 +21,7 @@ function pkg(props) {
   return name;
 }
 
-const configPlugins = {
+const plugins = {
   babel(config) {
     config._pkgs.push(
       pkg({name: 'babel-core', version: '1.2.3'}),
@@ -175,6 +175,6 @@ const configPlugins = {
 };
 
 module.exports = {
-  configPlugins,
+  plugins,
   pkg
 };

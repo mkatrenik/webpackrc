@@ -9,26 +9,38 @@ const parseArgs = require('minimist');
 const fs = require('fs');
 const debug = global.debug = require('debug')('webpackrc');
 const util = require('util');
+const assert = require('assert');
 
 const pkg = require('../package.json');
 const resolvePlugins = require('../src/resolvePlugins');
-const createWebpackConfig = require('../src/webpack.config');
+const createWebpackConfig = require('../src/generateWebpackConfig');
 const server = require('../src/server');
 
 const ENV = process.env.NODE_ENV || 'development';
 
 function _dump(data) {
-  return util.inspect(data, {showHidden: false, depth: null});
+  return util.inspect(data, {showHidden: false, depth: null, colors: true});
 }
 
 let rc = null;
 
 try {
-  const rcFile = fs.readFileSync(`${process.cwd()}/.webpackrc`).toString();
+  const rcFile = fs.readFileSync(path.join(process.cwd(), '.webpackrc')).toString();
   rc = JSON.parse(rcFile);
   debug(`.webpackrc > `, _dump(rc));
 } catch (err) {
-  debug(`[WARN] .webpackrc doesn't exist or is not valid json`, err);
+  debug(`[WARN] .webpackrc doesn't exist or is not valid json, using default`, err);
+  rc = {
+    env: {
+      [ENV]: {
+        plugins: []
+      }
+    }
+  };
+} finally {
+  assert(rc.env);
+  assert(rc.env[ENV]);
+  assert(rc.env[ENV].plugins);
 }
 
 const args = parseArgs(process.argv.slice(2), {

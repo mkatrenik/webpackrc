@@ -1,14 +1,13 @@
 const path = require('path');
 const uniq = require('lodash.uniq');
-const fs = require('fs');
 
 // load default plugins
-// iter over `plugins`:
+// iterate over `plugins`:
 //  - look in default plugins map
 //  - load from npm plugins { name -> fun }
 //  - if is local file apply
 
-const DEFAULT_PLUGINS = [
+const DEFAULT_PLUGINS_NAMES = [
   'json',
   'css',
   'imagesGifPng',
@@ -17,27 +16,45 @@ const DEFAULT_PLUGINS = [
   'svg'
 ];
 
-const DEFAULT_PLUGINS_MODIFIERS = require(path.resolve(__dirname, 'plugins'));
+const DEFAULT_PLUGINS = require('./defaultPlugins').plugins;
 
-function isLocalPlugin(pluginName) {
-  if (fs.existsSync(pluginName)) {
-    const filePath = path.resolve(process.cwd(), pluginName);
+/**
+ * detects if plugin is user provided
+ * @param {Strinng} pluginName
+ * @returns {null|Object}
+ */
+function getLocalPlugin(pluginName) {
+  const filePath = path.resolve(process.cwd(), pluginName);
+  try {
     return require(filePath);
+  } catch (err) {
+    return null;
   }
 }
 
+/**
+ * return plugin either from default or user provided
+ * @param {String} pluginName
+ * @returns {Function}
+ */
 function lookupPlugin(pluginName) {
-  const localPlugin = isLocalPlugin(pluginName);
+  const localPlugin = getLocalPlugin(pluginName);
   if (localPlugin) {
     return localPlugin;
   }
 
-  if (DEFAULT_PLUGINS_MODIFIERS[pluginName]) {
-    return DEFAULT_PLUGINS_MODIFIERS[pluginName];
+  if (DEFAULT_PLUGINS[pluginName]) {
+    return DEFAULT_PLUGINS[pluginName];
   }
+  throw new Error(`Can't find plugin ${pluginName}`);
 }
 
-module.exports = function (options) {
+/**
+ * return array of plugins
+ * @param {Object} options
+ * @returns {Array}
+ */
+function resolvePlugins(options) {
   if (options.entry.match(/tsx?$/)) {
     options.plugins.push('typescript');
   }
@@ -45,11 +62,15 @@ module.exports = function (options) {
   if (options.entry.match(/jsx?$/)) {
     options.plugins.push('babel');
   }
-
-  const uniqPlugins = uniq(DEFAULT_PLUGINS.concat(options.plugins));
+  // console.log(options);
+  const uniqPlugins = uniq(DEFAULT_PLUGINS_NAMES.concat(options.plugins));
   debug(`applying plugins {${uniqPlugins.join(', ')}}`);
 
   return uniqPlugins.map(p => {
     return lookupPlugin(p);
   });
-};
+}
+
+module.exports = resolvePlugins;
+module.exports.lookupPlugin = lookupPlugin;
+module.exports.getLocalPlugin = getLocalPlugin;

@@ -1,12 +1,10 @@
-require('harmonize')();
-
 const assert = require('assert');
-const p = require('../src/plugins');
+const p = require('../src/defaultPlugins');
 
 const configPlugins = p.configPlugins;
 const pkg = p.pkg;
 
-describe('plugins.js', () => {
+describe('defaultPlugins.js', () => {
   describe('pkg()', () => {
     it('should work with name', () => {
       const p = pkg({name: 'babel'});
