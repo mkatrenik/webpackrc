@@ -2,23 +2,16 @@
 
 const combineLoaders = require('webpack-combine-loaders');
 
+/**
+ * generate npm install command
+ * @param {Object} props
+ * @returns {String}
+ */
 function pkg(props) {
   if (!props.name) {
     throw new Error('Missing dependency name');
   }
-  let name = props.name;
-
-  if (props.version) {
-    name = `${name}@${props.version}`;
-  }
-
-  let save = '--save-dev';
-
-  if (props.saveProd) {
-    save = '--save';
-  }
-  name = `${name} ${save}`;
-  return name;
+  return props;
 }
 
 const plugins = {

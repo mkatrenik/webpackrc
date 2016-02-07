@@ -19,7 +19,7 @@ describe('resolvePlugins.js', () => {
     it('should return plugin functions', () => {
       const plugins = resolvePlugins({
         entry: 'foo.js',
-        plugins: ['./_customPlugin']
+        plugins: ['./customPlugin']
       });
       assert(plugins.length === 8);
     });
@@ -68,7 +68,7 @@ describe('resolvePlugins.js', () => {
       const configMock = {
         module: {loaders: []}
       };
-      const p = resolvePlugins.getLocalPlugin('_customPlugin');
+      const p = resolvePlugins.getLocalPlugin('customPlugin');
       p(configMock);
       assert(configMock.module.loaders[0].loader === 'foo');
     });

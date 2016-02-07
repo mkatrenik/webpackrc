@@ -1,34 +1,25 @@
-const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const NpmInstallPlugin = require('npm-install-webpack-plugin');
-const spawn = require('cross-spawn');
+const assert = require('assert');
 
 /* eslint no-warning-comments:[0] */
 // TODO cross env
 
 /**
- * Find the node_modules directory which will be resolved from a given dir.
+ * generare config
+ * @param {Object} options
+ * @returns {
+ *  {devtool: string, entry: *[], output: {path, filename: string, publicPath: string},
+ *  plugins: *[], resolve: {extensions: string[], root: (*|String), fallback: *[]},
+ *  module: {preloaders: Array, loaders: Array, postloaders: Array}, _pkgs: Array}
+ * }
  */
-function findNodeModules(cwd) {
-  const parts = cwd.split(path.sep);
-  while (parts.length > 0) {
-    const target = path.join(parts.join(path.sep), 'node_modules');
-    if (fs.existsSync(target)) {
-      return target;
-    }
-    parts.pop();
-  }
-}
+function config(options) {
+  assert(options.entry, `'entry' is missing in options`);
+  assert(options.env, `'env' is missing in options`);
+  assert(options.plugins, `'plugins' is missing in options`);
 
-function install(dep) {
-  const args = ['install'].concat(dep).filter(Boolean);
-  console.info('Installing `%s`...', args);
-  const output = spawn.sync('npm', args, {stdio: 'inherit'});
-  return output;
-}
-
-module.exports = function config(options) {
   const defaultConfig = {
     devtool: 'source-map',
     /* eslint no-warning-comments:[0] */
@@ -48,7 +39,7 @@ module.exports = function config(options) {
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoErrorsPlugin(),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(options.ENV)
+        'process.env.NODE_ENV': JSON.stringify(options.env)
       }),
       new NpmInstallPlugin({
         saveDev: true
@@ -56,8 +47,7 @@ module.exports = function config(options) {
     ],
     resolve: {
       extensions: ['', '.js', '.jsx', '.json', '.ts', '.tsx'],
-      root: process.cwd(),
-      fallback: [findNodeModules(__dirname)]
+      root: process.cwd()
     },
     module: {
       preloaders: [],
@@ -67,23 +57,12 @@ module.exports = function config(options) {
     _pkgs: []
   };
 
+  // apply plugins on config
   options.plugins.forEach(p => {
     p(defaultConfig);
   });
 
-  const pkg = require(path.join(process.cwd(), 'package.json'));
-  const installedDeps = [].concat(
-    Object.keys(pkg.devDependencies),
-    Object.keys(pkg.dependencies)
-  );
-
-  const notInstalledDeps = defaultConfig._pkgs.filter(p =>
-    installedDeps.indexOf(p) !== -1
-  );
-
-  notInstalledDeps.forEach(p => {
-    install(p);
-  });
-
   return defaultConfig;
-};
+}
+
+module.exports = config;

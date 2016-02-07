@@ -12,6 +12,7 @@ const server = require('../src/server');
 const loadConfig = require('../src/loadRcFile');
 const utils = require('../src/utils');
 const parseArgs = require('../src/parseArgs');
+const installDeps = require('../src/installDependencies');
 
 const dump = utils.dump;
 const debug = utils.debug;
@@ -34,4 +35,6 @@ debug('initialized with options', dump(options));
 options.plugins = resolvePlugins(options);
 
 const webpackConfig = createWebpackConfig(options);
+installDeps(webpackConfig._pkgs);
+
 server(webpackConfig, options);
