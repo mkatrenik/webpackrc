@@ -4,7 +4,7 @@
 
 require('harmonize')();
 
-const path = require('path');
+const webpack = require('webpack');
 
 const resolvePlugins = require('../src/resolvePlugins');
 const createWebpackConfig = require('../src/generateWebpackConfig');
@@ -17,24 +17,48 @@ const installDeps = require('../src/installDependencies');
 const dump = utils.dump;
 const debug = utils.debug;
 
-const env = process.env.NODE_ENV || 'development';
+const ENV = process.env.NODE_ENV || 'development';
 
 const args = parseArgs();
-const rc = loadConfig({env});
 
-const options = Object.assign({
-  entry: path.resolve(args.entry),
-  noInfo: !args.info,
-  port: args.port,
-  base: path.resolve(args.base),
-  env
-}, rc.env[env]);
+const rc = loadConfig({env: ENV});
 
-debug('initialized with options', dump(options));
+const ENTRY = args.entry;
 
-options.plugins = resolvePlugins(options);
+debug('initialized with options', dump({
+  argv: args,
+  webpackrc: rc
+}));
 
-const webpackConfig = createWebpackConfig(options);
+// load plugins
+const PLUGINS = resolvePlugins({
+  plugins: rc.env[ENV].plugins,
+  entry: ENTRY
+});
+
+// generate webpack config
+const webpackConfig = createWebpackConfig({
+  plugins: PLUGINS,
+  entry: ENTRY,
+  env: ENV,
+  distDir: args.distDir
+});
+
+// install missing dependencies
 installDeps(webpackConfig._pkgs);
 
-server(webpackConfig, options);
+// create webpack compiler
+const compiler = webpack(webpackConfig);
+
+if (args.dist) {
+  // build files
+  compiler.run(err => console.error(err));
+} else {
+  // run webpack-dev-server
+  server(compiler, {
+    base: args['server-base'],
+    port: args['server-port'],
+    outputPublicPath: webpackConfig.output.publicPath,
+    noInfo: true
+  });
+}

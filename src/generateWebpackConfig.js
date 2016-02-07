@@ -1,4 +1,3 @@
-const path = require('path');
 const webpack = require('webpack');
 const NpmInstallPlugin = require('npm-install-webpack-plugin');
 const assert = require('assert');
@@ -31,7 +30,7 @@ function config(options) {
       options.entry
     ],
     output: {
-      path: path.join(__dirname, 'build'),
+      path: options.distDir,
       filename: 'bundle.js',
       publicPath: '/'
     },

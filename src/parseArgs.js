@@ -1,18 +1,19 @@
 const parseArgs = require('minimist');
 const pkg = require('../package.json');
+const path = require('path');
 
 function parse() {
   const args = parseArgs(process.argv.slice(2), {
     alias: {
-      b: 'base',
       h: 'help',
-      p: 'port',
-      v: 'version'
+      v: 'version',
+      d: 'dist'
     },
     boolean: ['help', 'version'],
     default: {
-      port: 3000,
-      base: process.cwd()
+      'server-port': 3000,
+      'server-base': process.cwd()
+      // 'dist': path.join(process.cwd(), 'dist')
     }
   });
 
@@ -24,12 +25,18 @@ function parse() {
     console.log('Usage: webpackrc [options] script');
     console.log('');
     console.log('Options:');
-    console.log('  -b, --base    static file\'s base path');
-    console.log('  -p, --port    port to run the webpack dev server on [default: 3000]');
+    console.log('  -d, --dist       build directory(default: dist), no dev server is started');
+    console.log('  --server-base    static file\'s base path');
+    console.log('  --server-port    port to run the webpack dev server on [default: 3000]');
     console.log('  -v, --version print heatpack\'s version');
     return process.exit(0);
   }
-  args.entry = args._[0];
+  args.entry = path.resolve(args._[0]);
+  if (args.dist && typeof args.dist === 'string') {
+    args.distDir = path.resolve(args.dist);
+  } else {
+    args.distDir = process.cwd();
+  }
   return args;
 }
 

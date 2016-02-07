@@ -1,15 +1,12 @@
 const path = require('path');
 const express = require('express');
-const webpack = require('webpack');
-const debug = require('./utils').debug;
 
-module.exports = function server(webpackConfig, options) {
+module.exports = function server(compiler, options) {
   const app = express();
-  const compiler = webpack(webpackConfig);
 
   app.use(require('webpack-dev-middleware')(compiler, {
     noInfo: options.noInfo,
-    publicPath: webpackConfig.output.publicPath,
+    publicPath: options.outputPublicPath,
     stats: {
       colors: true
     }
@@ -28,6 +25,6 @@ module.exports = function server(webpackConfig, options) {
       console.error(err.stack);
       process.exit(1);
     }
-    debug(`listening at http://0.0.0.0:${options.port}`);
+    console.log(`listening at http://0.0.0.0:${options.port}`);
   });
 };
