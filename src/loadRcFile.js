@@ -3,6 +3,7 @@
 const path = require('path');
 const fs = require('fs');
 const assert = require('assert');
+const debug = require('./utils').debug;
 
 /**
  * tries to load local .webpackrc

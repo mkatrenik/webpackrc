@@ -17,8 +17,8 @@ function pkg(props) {
 const plugins = {
   babel(config) {
     config._pkgs.push(
-      pkg({name: 'babel-core', version: '1.2.3'}),
-      pkg({name: 'babel-preset-es2015', saveProd: true}),
+      pkg({name: 'babel-core'}),
+      pkg({name: 'babel-preset-es2015'}),
       pkg({name: 'babel-preset-react'}),
       pkg({name: 'babel-preset-stage-0'}),
       pkg({name: 'babel-plugin-transform-runtime'}),
