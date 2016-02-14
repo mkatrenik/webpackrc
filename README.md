@@ -3,12 +3,11 @@
 On the fly webpack config generator
   - provides preconfigured common webpack loaders & dev server with hot reloading
   - extensible through .webpackrc & plugin system
+  - auto install dependencies
 
 Simplest steps to serve typecript app
 ```bash
 npm i -g webpackrc
-npm i -D ts-loader typescript
-
 webpackrc index.ts
 ```
 (Go to localhost:3000)
