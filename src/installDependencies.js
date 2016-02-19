@@ -45,7 +45,12 @@ function installPackage(dep) {
  * @param {Array<Object>} pkgs
  */
 function install(pkgs) {
-  const pkg = require(path.join(process.cwd(), 'package.json'));
+  try {
+    const pkg = require(path.join(process.cwd(), 'package.json'));
+  } catch (err) {
+    console.log('Missing package.json, run `npm init -y`');
+    process.exit(1);
+  }
   const installedDeps = [].concat(
     Object.keys(pkg.devDependencies || {}),
     Object.keys(pkg.dependencies || {})
